@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css">
+    <script>
+        // Function to handle login
+        function handleLogin() {
+            // Get the user inputs for email/username and password
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Predefined credentials for demo (this should be replaced with an actual authentication process)
+            const validUsername = "user@example.com";
+            const validPassword = "password123";
+
+            // Check if credentials match
+            if (username === validUsername && password === validPassword) {
+                // Set login status to true and store user info
+                localStorage.setItem("isLoggedIn", true);
+                localStorage.setItem("username", username); // Store the username (or email)
+
+                alert("Login successful!");
+
+                // Redirect to homepage (index.html) after login
+                window.location.href = "index.html";  
+            } else {
+                alert("Invalid credentials. Please try again.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="head">
+        <div class="tags"><a href="index.html" id="option">Home</a></div>
+        <div class="tags"><a href="about.html" id="option">About Us</a></div>
+        <div class="tags"><a href="catalogue.html" id="option">Catalogue</a></div>
+    </div>
+
+    <!-- Login Section -->
+    <div class="login">
+        <div class="card">
+            <h2 id="welcome">Welcome Back</h2>
+            <p id="login">Login to your Account</p>
+            
+            <!-- Login Form -->
+            <div class="form-container">
+                <input id="username" type="text" placeholder="E-mail or Username" required>
+                <input id="password" type="password" placeholder="Password" required>
+                <button id="button" onclick="handleLogin()">Login</button>
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </div>
+</body>
+</html>

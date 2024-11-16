@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CATALOGUE PAGE</title>
+    <link rel="stylesheet" href="catalogue.css">
+    <script>
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem("isLoggedIn");
+            const username = localStorage.getItem("username");
+            const loginStatusIcon = document.getElementById("loginStatusIcon");
+            const loginText = document.getElementById("loginText");
+            const loginButton = document.getElementById("loginButton");
+
+            if (isLoggedIn === "true") {
+                // Update UI for logged-in state
+                loginStatusIcon.classList.remove("fa-sign-in-alt");
+                loginStatusIcon.classList.add("fa-user");
+                loginText.textContent = `Welcome, ${username}`;
+                loginButton.innerHTML = "Logout";
+                loginButton.onclick = logout;
+            } else {
+                // Update UI for logged-out state
+                loginStatusIcon.classList.remove("fa-user");
+                loginStatusIcon.classList.add("fa-sign-in-alt");
+                loginText.textContent = "Login";
+                loginButton.innerHTML = "Login";
+                loginButton.onclick = redirectToLogin;
+            }
+        }
+
+        // Function to redirect to login page
+        function redirectToLogin() {
+            window.location.href = "login.html";
+        }
+
+        // Function to handle logout
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("username");
+            localStorage.removeItem("cart"); // Clear cart on logout
+            checkLoginStatus(); // Update the UI
+        }
+
+        // Function to add an item to the cart
+        function addToCart(itemName, itemPrice) {
+            // Check if the user is logged in
+            let isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
+
+            if (!isLoggedIn) {
+                // If not logged in, show an alert and redirect to login page
+                alert("Please log in to add items to your cart.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
+            // If logged in, add the item to the cart
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.push({ name: itemName, price: itemPrice });
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert(`${itemName} has been added to your cart!`);
+        }
+
+        // Function to toggle login/logout on navbar
+        function updateNavbar() {
+            let isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
+            let loginLogoutLink = document.getElementById("login-logout");
+            
+            if (isLoggedIn) {
+                loginLogoutLink.innerText = "Logout";
+                loginLogoutLink.setAttribute("href", "#");
+                loginLogoutLink.onclick = logout;
+            } else {
+                loginLogoutLink.innerText = "Login";
+                loginLogoutLink.setAttribute("href", "login.html");
+                loginLogoutLink.onclick = null;
+            }
+        }
+
+        // Function to handle logout
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            updateNavbar();  // Update the navbar after logout
+            alert("You have been logged out.");
+            window.location.href = "index.html"; // Redirect to home page
+        }
+        function searchBooks() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const books = document.querySelectorAll(".book");
+            let resultsFound = false;
+
+            // Loop through all books and hide those that don't match the search term
+            books.forEach(book => {
+                const bookTitle = book.querySelector("p").textContent.toLowerCase();
+                if (bookTitle.includes(searchTerm)) {
+                    book.style.display = "block";
+                    resultsFound = true;
+                } else {
+                    book.style.display = "none";
+                }
+            });
+
+            // Display message if no results found
+            const noResultsMessage = document.getElementById("noResultsMessage");
+            if (!resultsFound && searchTerm !== "") {
+                noResultsMessage.style.display = "block";
+            } else {
+                noResultsMessage.style.display = "none";
+            }
+        }
+        function checkCartAccess() {
+            const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+            if (isLoggedIn !== "true") {
+                alert("Please log in first to access the cart.");
+                window.location.href = "login.html"; // Redirect to login page
+            } else {
+                window.location.href = "cart.html"; // Allow access to the cart page
+            }
+        }
+        window.onload = function() {
+            checkLoginStatus();
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <div class="head">
+            <!-- Search bar -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for books..." onkeyup="searchBooks()" style="padding: 10px; font-size: 16px; width: 250px;">
+                <!-- <input type="text" id="searchInput" placeholder="Search books..."> -->
+                <button onclick="searchBooks()">Search</button>
+            </div>
+            <div class="tags"><a href="index.html" id="option">Home</a></div>
+            <div class="tags"><a href="about.html" id="option">About Us</a></div>
+            <div class="tags"><a href="catalogue.html" id="option">Catalogue</a></div>
+            <!-- Modify the Cart link to check login status before navigating -->
+            <div class="tags"><a href="javascript:void(0);" id="option" onclick="checkCartAccess()">Cart</a></div>
+            <div id="loginStatus" style="position: absolute; top: 10px; right: 10px; display: flex; align-items: center;">
+                <i id="loginStatusIcon" class="fas fa-sign-in-alt" style="font-size: 30px; margin-right: 10px;"></i>
+                <span id="loginText">Login</span>
+                <button id="loginButton" onclick="redirectToLogin()">Login</button>
+            </div>
+        </div>
+        <!-- Login Status Icon and Logout/Welcome Button -->
+        
+    </header>
+    <div class="main">
+        <div class="books">
+            <!-- Books list, same as before -->
+            <div class="book">
+                <img src="deal.jpeg" alt="">
+                <p>Amazing Spider Man</p>
+                <button class="add-to-cart" onclick="addToCart('Amazing Spider Man', 10)">Add to Cart - $10</button>
+            </div>
+            <div class="book">
+                <img src="deal12.jpeg" alt="">
+                <p>Avengers</p>
+                <button class="add-to-cart" onclick="addToCart('Avengers', 15)">Add to Cart - $15</button>
+            </div>
+            <div class="book">
+                <img src="deal2.jpg" alt="">
+                <p>Super Man</p>
+                <button class="add-to-cart" onclick="addToCart('Super Man', 12)">Add to Cart - $12</button>
+            </div>
+            <div class="book">
+                <img src="deal3.jpeg" alt="">
+                <p>The Green Lantern</p>
+                <button class="add-to-cart" onclick="addToCart('The Green Lantern', 14)">Add to Cart - $14</button>
+            </div>
+            <div class="book">
+                <img src="deal4.jpg" alt="">
+                <p>Dare Devil</p>
+                <button class="add-to-cart" onclick="addToCart('Dare Devil', 11)">Add to Cart - $11</button>
+            </div>
+            <div class="book">
+                <img src="deal5.jpeg" alt="">
+                <p>The Comics</p>
+                <button class="add-to-cart" onclick="addToCart('The Comics', 8)">Add to Cart - $8</button>
+            </div>
+            <div class="book">
+                <img src="deal6.jpeg" alt="">
+                <p>Space Dumplins</p>
+                <button class="add-to-cart" onclick="addToCart('Space Dumplins', 13)">Add to Cart - $13</button>
+            </div>
+            <div class="book">
+                <img src="deal7.jpeg" alt="">
+                <p>IT AINT ME BABE</p>
+                <button class="add-to-cart" onclick="addToCart('IT AINT ME BABE', 9)">Add to Cart - $9</button>
+            </div>
+            <div class="book">
+                <img src="deal8.jpeg" alt="">
+                <p>The Simpsons</p>
+                <button class="add-to-cart" onclick="addToCart('The Simpsons', 10)">Add to Cart - $10</button>
+            </div>
+            <div class="book">
+                <img src="deal9.jpeg" alt="">
+                <p>Batman</p>
+                <button class="add-to-cart" onclick="addToCart('Batman', 16)">Add to Cart - $16</button>
+            </div>
+            <div class="book">
+                <img src="deal10.jpeg" alt="">
+                <p>DC Variant Covers</p>
+                <button class="add-to-cart" onclick="addToCart('DC Variant Covers', 17)">Add to Cart - $17</button>
+            </div>
+            <div class="book">
+                <img src="deal11.jpeg" alt="">
+                <p>Detective Comics</p>
+                <button class="add-to-cart" onclick="addToCart('Detective Comics', 14)">Add to Cart - $14</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

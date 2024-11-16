@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOK STORE ||</title>
+    <link rel="stylesheet" href="home.css">
+    <!-- Include FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <script>
+        // Function to check login status and update the UI accordingly
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem("isLoggedIn");
+            const username = localStorage.getItem("username");
+            const loginStatusIcon = document.getElementById("loginStatusIcon");
+            const loginText = document.getElementById("loginText");
+            const loginButton = document.getElementById("loginButton");
+
+            if (isLoggedIn === "true") {
+                // Update UI for logged-in state
+                loginStatusIcon.classList.remove("fa-sign-in-alt");
+                loginStatusIcon.classList.add("fa-user");
+                loginText.textContent = `Welcome, ${username}`;
+                loginButton.innerHTML = "Logout";
+                loginButton.onclick = logout;
+            } else {
+                // Update UI for logged-out state
+                loginStatusIcon.classList.remove("fa-user");
+                loginStatusIcon.classList.add("fa-sign-in-alt");
+                loginText.textContent = "Login";
+                loginButton.innerHTML = "Login";
+                loginButton.onclick = redirectToLogin;
+            }
+        }
+
+        // Function to redirect to login page
+        function redirectToLogin() {
+            window.location.href = "login.html";
+        }
+
+        // Function to handle logout
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("username");
+            localStorage.removeItem("cart"); // Clear cart on logout
+            checkLoginStatus(); // Update the UI
+        }
+
+        // Function to check login status before navigating to cart
+        function checkCartAccess() {
+            const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+            if (isLoggedIn !== "true") {
+                alert("Please log in first to access the cart.");
+                window.location.href = "login.html"; // Redirect to login page
+            } else {
+                window.location.href = "cart.html"; // Allow access to the cart page
+            }
+        }
+        function searchBooks() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const books = document.querySelectorAll(".book");
+            let resultsFound = false;
+
+            // Loop through all books and hide those that don't match the search term
+            books.forEach(book => {
+                const bookTitle = book.querySelector("p").textContent.toLowerCase();
+                if (bookTitle.includes(searchTerm)) {
+                    book.style.display = "block";
+                    resultsFound = true;
+                } else {
+                    book.style.display = "none";
+                }
+            });
+
+            // Display message if no results found
+            const noResultsMessage = document.getElementById("noResultsMessage");
+            if (!resultsFound && searchTerm !== "") {
+                noResultsMessage.style.display = "block";
+            } else {
+                noResultsMessage.style.display = "none";
+            }
+        }
+        // Initialize page when it loads
+        window.onload = function() {
+            checkLoginStatus();
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <div class="head">
+            <!-- Search bar -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for books..." onkeyup="searchBooks()" style="padding: 10px; font-size: 16px; width: 250px;">
+                <!-- <input type="text" id="searchInput" placeholder="Search books..."> -->
+                <button onclick="searchBooks()">Search</button>
+            </div>
+            <div class="tags"><a href="index.html" id="option">Home</a></div>
+            <div class="tags"><a href="about.html" id="option">About Us</a></div>
+            <div class="tags"><a href="catalogue.html" id="option">Catalogue</a></div>
+            <!-- Modify the Cart link to check login status before navigating -->
+            <div class="tags"><a href="javascript:void(0);" id="option" onclick="checkCartAccess()">Cart</a></div>
+            <div id="loginStatus" style="position: absolute; top: 10px; right: 10px; display: flex; align-items: center;">
+                <i id="loginStatusIcon" class="fas fa-sign-in-alt" style="font-size: 30px; margin-right: 10px;"></i>
+                <span id="loginText">Login</span>
+                <button id="loginButton" onclick="redirectToLogin()">Login</button>
+            </div>
+        </div>
+        <!-- Login Status Icon and Logout/Welcome Button -->
+        
+    </header>
+
+    
+
+    <main>
+        <div class="contentbox">
+            <h1>Welcome To The World Of Books !!!</h1>
+            <div class="welcome">
+                <div class="note">
+                    <a href="catalogue.html">Deal Of The Day </a>
+                </div>
+                <br><br>
+                <div class="card">
+                    <div class="book"><img src="deal.jpeg" alt="" width="150px">
+                    <p>The Spider Man</p>
+                    </div>
+                    <div class="book"><img src="deal2.jpg" alt="" width="140px">
+                    <p>The Super Man</p>
+                    </div>
+                    <div class="book"><img src="deal3.jpeg" alt="" width="150px">
+                    <p>The Green Lantern</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

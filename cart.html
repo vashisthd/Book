@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="cart.css">
+    <script>
+        // Function to display cart items
+        function displayCart() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const cartContainer = document.getElementById("cartContainer");
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+            } else {
+                cartContainer.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <p>${item.name} - $${item.price}</p>
+                        <button onclick="removeFromCart('${item.name}')">Remove</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Function to remove an item from the cart
+        function removeFromCart(itemName) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart = cart.filter(item => item.name !== itemName);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            displayCart(); // Update the cart view after removal
+        }
+
+        // Initialize page when it loads
+        window.onload = function() {
+            displayCart();
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <div class="head">
+            <div class="tags"><a href="index.html" id="option">Home</a></div>
+            <div class="tags"><a href="about.html" id="option">About Us</a></div>
+            <div class="tags"><a href="catalogue.html" id="option">Catalogue</a></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="contentbox">
+            <h1>Your Cart</h1>
+            <div id="cartContainer"></div>
+        </div>
+    </main>
+</body>
+</html>
